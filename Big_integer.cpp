@@ -33,7 +33,7 @@ public:
         }
     }
 
-    // Subtraction
+    // subtraction
     BigInteger operator-(const BigInteger &other) const
     {
         if (sign != other.sign)
