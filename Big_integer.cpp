@@ -68,7 +68,7 @@ public:
     BigInteger operator/(const BigInteger &other) const
     {
         if (other == BigInteger("0"))
-            throw invalid_argument("Division by zero");
+            throw invalid_argument("Division by zero is not allowed.");
         BigInteger ans = divide(*this, other);
         ans.sign = sign * other.sign;
         return ans;
@@ -359,10 +359,12 @@ private:
 
 BigInteger factorial(int n)
 {
-    BigInteger ans("1");
-    for (int i = 2; i <= n; i++)
-        ans = ans * BigInteger(i);
-    return ans;
+    static unordered_map<int, BigInteger> fact_memo;
+    if (n == 0 || n == 1)
+        return BigInteger("1");
+    if (fact_memo.count(n))
+        return fact_memo[n];
+    return fact_memo[n] = BigInteger(n) * factorial(n - 1);
 }
 
 // BigInteger catalan(int n)
@@ -382,18 +384,22 @@ BigInteger catalan(int n)
     return ans[n];
 }
 
-BigInteger fibonacci(int n)
+pair<BigInteger, BigInteger> fib_matrix(BigInteger n)
 {
-    if (n <= 1)
-        return BigInteger(to_string(n));
+    if (n == BigInteger("0"))
+        return {BigInteger("0"), BigInteger("1")};
+    auto p = fib_matrix(n / BigInteger("2"));
+    BigInteger c = p.first * (BigInteger("2") * p.second - p.first);
+    BigInteger d = p.first * p.first + p.second * p.second;
+    if (n % BigInteger("2") == BigInteger("0"))
+        return {c, d};
+    else
+        return {d, c + d};
+}
 
-    vector<BigInteger> fib(n + 1);
-    fib[0] = BigInteger("0");
-    fib[1] = BigInteger("1");
-
-    for (int i = 2; i <= n; i++)
-        fib[i] = fib[i - 1] + fib[i - 2];
-    return fib[n];
+BigInteger fibonacci(BigInteger n)
+{
+    return fib_matrix(n).first;
 }
 
 BigInteger power(const BigInteger &base, const BigInteger &exponent)
@@ -403,18 +409,14 @@ BigInteger power(const BigInteger &base, const BigInteger &exponent)
 
     BigInteger ans("1"), exp = exponent, b = base;
 
-    while (!exp.is_zero())
+    while (exp > BigInteger("0"))
     {
-        if ((exp % BigInteger("2")).is_zero())
-        {
-            b = b * b;
-            exp = exp / BigInteger("2");
-        }
-        else
+        if ((exp % BigInteger("2")) == BigInteger("1"))
         {
             ans = ans * b;
-            exp = exp - BigInteger("1");
         }
+        b = b * b;
+        exp = exp / BigInteger("2");
     }
 
     return ans;
@@ -422,29 +424,124 @@ BigInteger power(const BigInteger &base, const BigInteger &exponent)
 
 int main()
 {
-    int n;
-    // cout << "Enter a number: ";
-    // cin >> n;
-    int a, b;
-    cout << "Enter numbers for power operations: ";
-    cin >> a >> b;
+    while (true)
+    {
+        cout << "\n----- MENU -----" << endl;
+        cout << "1. Factorial" << endl;
+        cout << "2. Fibonacci" << endl;
+        cout << "3. Catalan Number" << endl;
+        cout << "4. Power (Base ^ Exponent)" << endl;
+        cout << "5. Exit" << endl;
+        cout << "----------------" << endl;
+        cout << "Enter your choice (1-5): ";
+        int choice;
+        cin >> choice;
 
-    auto start = high_resolution_clock::now();
+        if (!cin)
+        { // Input validation for non-integer inputs
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid input. Please enter a number between 1 and 5.\n";
+            continue;
+        }
 
-    // BigInteger cat = catalan(n);
-    // BigInteger fact = factorial(n);
-    // BigInteger fib = fibonacci(n);
-    BigInteger pow = power(a, b);
+        if (choice == 5)
+        {
+            cout << "Exiting program... Goodbye!" << endl;
+            break;
+        }
 
-    auto end = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(end - start);
+        int n, a, b;
+        BigInteger result;
 
-    // cout << "Catalan number " << n << " = " << cat << endl;
-    // cout << n << " ! = " << fact << endl;
-    // cout << "Fibonacci " << n << " = " << fib << endl;
-    cout << a << " ^ " << b << " = " << pow << endl;
+        switch (choice)
+        {
+        case 1:
+            cout << "Enter a number for factorial: ";
+            cin >> n;
+            if (n < 0)
+            {
+                cout << "Factorial is not defined for negative numbers." << endl;
+            }
+            else
+            {
+                auto start = high_resolution_clock::now();
+                result = factorial(n);
+                auto end = high_resolution_clock::now();
+                auto duration = duration_cast<milliseconds>(end - start);
+                cout << "Factorial(" << n << ") = " << result << endl;
+                cout << "Time taken: " << duration.count() << " ms" << endl;
+            }
+            break;
 
-    cout << "Time taken: " << duration.count() << " ms" << endl;
+        case 2:
+            cout << "Enter a number for Fibonacci: ";
+            cin >> n;
+            if (n < 0)
+            {
+                cout << "Fibonacci is not defined for negative numbers." << endl;
+            }
+            else
+            {
+                auto start = high_resolution_clock::now();
+                result = fibonacci(BigInteger(n));
+                auto end = high_resolution_clock::now();
+                auto duration = duration_cast<milliseconds>(end - start);
+                cout << "Fibonacci(" << n << ") = " << result << endl;
+                cout << "Time taken: " << duration.count() << " ms" << endl;
+            }
+            break;
+
+        case 3:
+            cout << "Enter a number for Catalan number: ";
+            cin >> n;
+            if (n < 0)
+            {
+                cout << "Catalan number is not defined for negative numbers." << endl;
+            }
+            else
+            {
+                auto start = high_resolution_clock::now();
+                result = catalan(n);
+                auto end = high_resolution_clock::now();
+                auto duration = duration_cast<milliseconds>(end - start);
+                cout << "Catalan(" << n << ") = " << result << endl;
+                cout << "Time taken: " << duration.count() << " ms" << endl;
+            }
+            break;
+
+        case 4:
+            cout << "Enter base: ";
+            cin >> a;
+            if (a < 0)
+            {
+                cout << "Negative base is not handled in this version." << endl;
+                break;
+            }
+            cout << "Enter exponent: ";
+            cin >> b;
+            if (b < 0)
+            {
+                cout << "Negative exponents are not handled in this version." << endl;
+                break;
+            }
+            else
+            {
+                auto start = high_resolution_clock::now();
+                result = power(BigInteger(a), BigInteger(b));
+                auto end = high_resolution_clock::now();
+                auto duration = duration_cast<milliseconds>(end - start);
+                cout << a << " ^ " << b << " = " << result << endl;
+                cout << "Time taken: " << duration.count() << " ms" << endl;
+            }
+            break;
+
+        default:
+            cout << "Invalid choice, please try again." << endl;
+            continue;
+        }
+    }
 
     return 0;
 }
+    
