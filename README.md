@@ -19,10 +19,10 @@ This project features a robust Big Integer class in C++, capable of handling and
   - **🔄 Logical operations (&&, ||, !)**
 
 - **📐 Mathematical Functions**:
-  - **Factorial calculation** 🎯
-  - **Fibonacci sequence generation** 🐑
-  - **Catalan number computation** 📊
-  - **Exponentiation (power function)** 💥
+  - **Factorial calculation**
+  - **Fibonacci sequence generation**
+  - **Catalan number computation**
+  - **Exponentiation (power function)**
 
 - **🔍 Exception Handling**: Includes checks for special cases like division by zero.
 
