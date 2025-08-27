@@ -28,4 +28,4 @@ This project features a robust Big Integer class in C++, capable of handling and
 
 ## 👨‍💻 Author
 
-Developed by [Vignat Tank](https://github.com/Vignat0905) 🚀
+Developed by [Jenil Jaiswal](https://github.com/JenilJaiswal/) 🚀
