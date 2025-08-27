@@ -10,15 +10,17 @@ This project features a robust Big Integer class in C++, capable of handling and
 
 - **🔢 Arbitrary Precision Arithmetic**: Handle integers of virtually unlimited size, constrained only by memory.
 - **⚙️ Comprehensive Operations**: Supports a full suite of arithmetic operations, including:
+
   - **➕ Addition (+)**
   - **➖ Subtraction (-)**
-  - **✖️ Multiplication (*)**
-  - **➗ Division (/)** 
+  - **✖️ Multiplication (\*)**
+  - **➗ Division (/)**
   - **➗ Modulo (%)**
   - **🔀 Bitwise operations (&, |, ^, ~)**
   - **🔄 Logical operations (&&, ||, !)**
 
 - **📐 Mathematical Functions**:
+
   - **Factorial calculation**
   - **Fibonacci sequence generation**
   - **Catalan number computation**
